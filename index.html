@@ -3,14 +3,110 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>hipstarter</title>
+  <title>swing</title>
   <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
   <link rel="stylesheet" href="bundle/bundle.css">
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script> -->
+  <script src="js/index.js"></script>
+  <script src="./Pizzicato.js"></script>
 </head>
 
 <body>
+  <div id="one" class="piano-key"></div>
+  <div id="two" class="piano-key"></div>
+  <div id="three" class="piano-key"></div>
+  <div id="four" class="piano-key"></div>
+  <div id="five" class="piano-key"></div>
+  <div id="six" class="piano-key"></div>
+  <div id="seven" class="piano-key"></div>
+  <script type="text/javascript">
+    var one = new Pizzicato.Sound({
+      source: 'wave',
+      options: {
+        frequency: 739.99,
+        attack: 0.1,
+        release: 1
+      }
+    });
+    var two = new Pizzicato.Sound({
+      source: 'wave',
+      options: {
+        frequency: 587.33,
+        attack: 0.1,
+        release: 1
+      }
+    });
+    var three = new Pizzicato.Sound({
+      source: 'wave',
+      options: {
+        frequency: 440.00,
+        attack: 0.1,
+        release: 1
+      }
+    });
+    var four = new Pizzicato.Sound({
+      source: 'wave',
+      options: {
+        frequency: 369.99,
+        attack: 0.1,
+        release: 1
+      }
+    });
+    var five = new Pizzicato.Sound({
+      source: 'wave',
+      options: {
+        frequency: 293.66,
+        attack: 0.1,
+        release: 1
+      }
+    });
+    var six = new Pizzicato.Sound({
+      source: 'wave',
+      options: {
+        frequency: 220.00,
+        attack: 0.1,
+        release: 1
+      }
+    });
 
-  <div class="back-unit">
+    var createSound = function(keyFreq) {
+      return new Pizzicato.Sound({
+        source: 'wave',
+        options: {
+          frequency: keyFreq,
+          attack: 0.1,
+          release: 1
+        }
+      })
+    }
+    var sounds = {one: 739.99, two: 587.33, three: 440.00, four: 369.99, five: 293.66, six: 220.00, seven: 146.83}
+
+
+
+
+    var playSound = function(note) {
+      console.log(note);
+      sounds.note.play();
+      setTimeout(function() {
+        sounds.note.stop();
+      }, 500);
+    }
+
+    var pianoKeys = document.querySelectorAll('.piano-key');
+    pianoKeys.forEach(function(key) {
+      key.addEventListener('click', function() {
+        console.log(typeof key.id);
+
+        var note = key.id;
+        playSound(note);
+        setInterval(function() {
+          playSound(note)
+        }, 5000)
+      })
+    })
+  </script>
+
+  <!-- <div class="back-unit">
     <div class="sky">
       <div class="cloud-one"></div>
       <div class="cloud-two"></div>
@@ -36,10 +132,11 @@
       </div>
 
     </div>
-  </div>
+  </div> -->
 
 
   <script src="bundle/bundle.js"></script>
+
 </body>
 
 </html>

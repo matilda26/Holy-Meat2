@@ -26,5 +26,8 @@
     "gulp-util": "^3.0.7",
     "run-sequence": "^1.2.0",
     "webpack": "^1.13.1"
+  },
+  "dependencies": {
+    "pizzicato": "^0.6.3"
   }
 }
