@@ -1,28 +1,9 @@
-# hipstarter
+# WebGL Exploration
 
-simple gulp webpack es6 sass starter for quick prototypes
+a simple exploration of WebGL and Three.js
 
-- modules with webpack
-- es6/es2015 with babel
-- sass
-- autoprefixer
-- browser-sync
-- eslint
+## Technologies Used
+Using three.js, this site renders 3D model objects
 
-# usage
-
-clone into your own folder
-```
-$ git clone url new_folder_name
-```
-
-cd into new folder and install dependencies
-```
-$ npm install
-```
-
-start developing
-```
-$ npm start
-```
-navigate to localhost:3000 or change port in gulpfile
+## Future exploration
+I would like to take this further by making the individual elements interative and animated.
