@@ -2,149 +2,170 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>swing</title>
-  <link href="https://fonts.googleapis.com/css?family=Amatic+SC" rel="stylesheet">
-  <link rel="stylesheet" href="bundle/bundle.css">
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script> -->
-  <script src="js/index.js"></script>
-  <script src="js/Pizzicato.js"></script>
-
-  <style>
-    body {
-      margin: 0;
-    }
-
-    /* canvas {
-      width: 100%;
-      height: 100%
-    } */
-  </style>
+	<title>Holy-Meat</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+	<style>
+		body {
+			font-family: Monospace;
+			background-color: #ffffff;
+			color: #fff;
+			margin: 0px;
+			overflow: hidden;
+		}
+	</style>
 </head>
 
 <body>
 
-  <script src="three.js">
-    // Instantiate a loader
-    var loader = new THREE.GLTFLoader();
 
-    // Optional: Provide a DRACOLoader instance to decode compressed mesh data
-    THREE.DRACOLoader.setDecoderPath('/examples/js/libs/draco');
-    loader.setDRACOLoader(new THREE.DRACOLoader());
+	<script src="js/three.js"></script>
 
-    // Load a glTF resource
-    loader.load(
-      // resource URL
-      'models/Waving.gltf',
-      // called when the resource is loaded
-      function(gltf) {
+	<script src="js/OrbitControls.js"></script>
+	<script src="js/GLTFLoader.js"></script>
 
-        scene.add(gltf.scene);
+	<script src="js/Detector.js"></script>
+	<script src="js/stats.js"></script>
 
-        gltf.animations; // Array<THREE.AnimationClip>
-        gltf.scene; // THREE.Scene
-        gltf.scenes; // Array<THREE.Scene>
-        gltf.cameras; // Array<THREE.Camera>
-        gltf.asset; // Object
+	<script>
+		if (!Detector.webgl) Detector.addGetWebGLMessage();
 
-      },
-      // called when loading is in progresses
-      function(xhr) {
+		var container, controls;
+		var camera, scene, renderer, light;
+		var objects = [];
+		var loader = new THREE.GLTFLoader();
+		var tex = new THREE.TextureLoader().load('models/textures/Meat/Raw_meat.jpg');
+		var kiwiTex = new THREE.TextureLoader().load('models/textures/Meat/Kiwi_Color.tga');
 
-        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+		init();
+		animate();
 
-      },
-      // called when loading has errors
-      function(error) {
+		function init() {
 
-        console.log('An error happened');
+			container = document.createElement('div');
+			document.body.appendChild(container);
 
-      }
-    );
-  </script>
-  <!-- <div id="one" class="piano-key"></div>
-  <div id="two" class="piano-key"></div>
-  <div id="three" class="piano-key"></div>
-  <div id="four" class="piano-key"></div>
-  <div id="five" class="piano-key"></div>
-  <div id="six" class="piano-key"></div>
-  <div id="seven" class="piano-key"></div>
-  <div id="eight" class="piano-key"></div>
-  <div id="nine" class="piano-key"></div>
-  <div id="ten" class="piano-key"></div>
-  <div id="eleven" class="piano-key"></div>
-  <script type="text/javascript">
-    var soundsSource = {
-      one: new Pz.Sound('./audio/11D.wav'),
-      two: new Pz.Sound('./audio/10C.wav'),
-      three: new Pz.Sound('./audio/9A.wav'),
-      four: new Pz.Sound('./audio/8G.wav'),
-      five: new Pz.Sound('./audio/7F.wav'),
-      six: new Pz.Sound('./audio/6D.wav'),
-      seven: new Pz.Sound('./audio/5C.wav'),
-      eight: new Pz.Sound('./audio/4A.wav'),
-      nine: new Pz.Sound('./audio/3G.wav'),
-      ten: new Pz.Sound('./audio/2F.wav'),
-      eleven: new Pz.Sound('./audio/1D.wav')
-    }
+			camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+			camera.position.set(200, 200, 200);
+
+			controls = new THREE.OrbitControls(camera);
+			controls.target.set(0, 200, -0.2);
+			controls.update();
+
+			scene = new THREE.Scene();
+			scene.add(new THREE.AmbientLight(0x0f0f0f));
+
+			var light = new THREE.SpotLight(0xffffff, 1.5);
+			light.position.set(0, 500, 2000);
+
+			scene.add(light);
+
+			// model
+			var loader = new THREE.GLTFLoader();
+			var tex = new THREE.TextureLoader().load('models/textures/Meat/Raw_meat.jpg');
 
 
+			for (var i = 0; i < 100; i++) {
+				loader.load('models/Meat.gltf', function(gltf) {
+
+					gltf.scene.traverse(function(child) {
+
+						if (child.isMesh) {
+
+							// child.material.envMap = envMap;
+							child.material.map = tex;
+							child.position.x = Math.random() * 400 - 10;
+							child.position.y = Math.random() * 400 - 10;
+							child.position.z = Math.random() * 400 - 10;
+							// child.rotation.x = Math.random() * 0 - 6;
+							// child.rotation.y = Math.random() * 0 - 6;
+
+							child.castShadow = true;
+							child.receiveShadow = true;
+
+						}
+
+					});
 
 
-    var pianoKeys = document.querySelectorAll('.piano-key');
-    pianoKeys.forEach(function(key) {
-      key.addEventListener('click', function() {
-        var volumeCount = 1;
-        console.log(soundsSource[key.id]);
-        soundsSource[key.id].attack = 0.1;
-        soundsSource[key.id].play();
 
-        var fadeOut = setInterval(function() {
-          volumeCount = volumeCount - 0.2;
-          if (volumeCount < 0.1) {
-            clearInterval(fadeOut);
-          } else {
-            soundsSource[key.id].volume = volumeCount;
+					scene.add(gltf.scene);
 
-            soundsSource[key.id].attack = 0.1;
-            console.log(soundsSource[key.id]);
-            soundsSource[key.id].play();
-          }
-        }, 5000)
-      })
-    }) -->
-  </script>
+					objects.push(gltf.scene);
+				})
+			}
 
-  <!-- <div class="back-unit">
-    <div class="sky">
-      <div class="cloud-one"></div>
-      <div class="cloud-two"></div>
-    </div>
-    <div class="ground">
-      <div class="g-man"></div>
-    </div>
-    <div class="man">
-      <div class="body"></div>
-      <div class="left-arm">
-        <div class="arm-top"></div>
-        <div class="arm-bottom"></div>
-        <div class="hand"></div>
-      </div>
-      <div class="left-leg">
-        <div class="leg-top"></div>
-        <div class="leg-bottom"></div>
-        <div class="shoe"></div>
-      </div>
-      <div class="right-leg">
-        <div class="leg-top"></div>
-        <div class="leg-bottom"></div>
-      </div>
+			renderer = new THREE.WebGLRenderer({
+				antialias: true
+			});
+			renderer.setPixelRatio(window.devicePixelRatio);
+			renderer.setSize(window.innerWidth, window.innerHeight);
+			renderer.gammaOutput = true;
+			container.appendChild(renderer.domElement);
 
-    </div>
-  </div> -->
+			window.addEventListener('resize', onWindowResize, false);
+		}
+
+		function onWindowResize() {
+
+			camera.aspect = window.innerWidth / window.innerHeight;
+			camera.updateProjectionMatrix();
+
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+		}
+
+		//
+
+		document.querySelector('canvas').addEventListener('click', function(e) {
+			for (var i = 0; i < 20; i++) {
+				loader.load('models/Meat.gltf', function(gltf) {
+
+					gltf.scene.traverse(function(child) {
+
+						if (child.isMesh) {
+
+							// child.material.envMap = envMap;
+							child.material.map = tex;
+							child.position.x = Math.random() * 400 - 0;
+							child.position.y = Math.random() * 400 - 0;
+							child.position.z = Math.random() * 400 - 0;
+							// child.rotation.x = Math.random() * 0 - 6;
+							// child.rotation.y = Math.random() * 0 - 6;
+
+							child.castShadow = true;
+							child.receiveShadow = true;
+
+						}
+
+					});
 
 
-  <script src="bundle/bundle.js"></script>
+
+					scene.add(gltf.scene);
+
+					objects.push(gltf.scene);
+				})
+			}
+
+		})
+
+
+		function animate() {
+
+			requestAnimationFrame(animate);
+
+			objects.forEach(function(object) {
+				object.rotation.x += 0.001;
+				object.rotation.y += 0.001;
+			})
+
+
+
+			renderer.render(scene, camera);
+
+		}
+	</script>
 
 </body>
 
