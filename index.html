@@ -8,102 +8,111 @@
   <link rel="stylesheet" href="bundle/bundle.css">
   <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.6.1/p5.js"></script> -->
   <script src="js/index.js"></script>
-  <script src="./Pizzicato.js"></script>
+  <script src="js/Pizzicato.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+    }
+
+    /* canvas {
+      width: 100%;
+      height: 100%
+    } */
+  </style>
 </head>
 
 <body>
-  <div id="one" class="piano-key"></div>
+
+  <script src="three.js">
+    // Instantiate a loader
+    var loader = new THREE.GLTFLoader();
+
+    // Optional: Provide a DRACOLoader instance to decode compressed mesh data
+    THREE.DRACOLoader.setDecoderPath('/examples/js/libs/draco');
+    loader.setDRACOLoader(new THREE.DRACOLoader());
+
+    // Load a glTF resource
+    loader.load(
+      // resource URL
+      'models/Waving.gltf',
+      // called when the resource is loaded
+      function(gltf) {
+
+        scene.add(gltf.scene);
+
+        gltf.animations; // Array<THREE.AnimationClip>
+        gltf.scene; // THREE.Scene
+        gltf.scenes; // Array<THREE.Scene>
+        gltf.cameras; // Array<THREE.Camera>
+        gltf.asset; // Object
+
+      },
+      // called when loading is in progresses
+      function(xhr) {
+
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+
+      },
+      // called when loading has errors
+      function(error) {
+
+        console.log('An error happened');
+
+      }
+    );
+  </script>
+  <!-- <div id="one" class="piano-key"></div>
   <div id="two" class="piano-key"></div>
   <div id="three" class="piano-key"></div>
   <div id="four" class="piano-key"></div>
   <div id="five" class="piano-key"></div>
   <div id="six" class="piano-key"></div>
   <div id="seven" class="piano-key"></div>
+  <div id="eight" class="piano-key"></div>
+  <div id="nine" class="piano-key"></div>
+  <div id="ten" class="piano-key"></div>
+  <div id="eleven" class="piano-key"></div>
   <script type="text/javascript">
-    var one = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 739.99,
-        attack: 0.1,
-        release: 1
-      }
-    });
-    var two = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 587.33,
-        attack: 0.1,
-        release: 1
-      }
-    });
-    var three = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 440.00,
-        attack: 0.1,
-        release: 1
-      }
-    });
-    var four = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 369.99,
-        attack: 0.1,
-        release: 1
-      }
-    });
-    var five = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 293.66,
-        attack: 0.1,
-        release: 1
-      }
-    });
-    var six = new Pizzicato.Sound({
-      source: 'wave',
-      options: {
-        frequency: 220.00,
-        attack: 0.1,
-        release: 1
-      }
-    });
-
-    var createSound = function(keyFreq) {
-      return new Pizzicato.Sound({
-        source: 'wave',
-        options: {
-          frequency: keyFreq,
-          attack: 0.1,
-          release: 1
-        }
-      })
+    var soundsSource = {
+      one: new Pz.Sound('./audio/11D.wav'),
+      two: new Pz.Sound('./audio/10C.wav'),
+      three: new Pz.Sound('./audio/9A.wav'),
+      four: new Pz.Sound('./audio/8G.wav'),
+      five: new Pz.Sound('./audio/7F.wav'),
+      six: new Pz.Sound('./audio/6D.wav'),
+      seven: new Pz.Sound('./audio/5C.wav'),
+      eight: new Pz.Sound('./audio/4A.wav'),
+      nine: new Pz.Sound('./audio/3G.wav'),
+      ten: new Pz.Sound('./audio/2F.wav'),
+      eleven: new Pz.Sound('./audio/1D.wav')
     }
-    var sounds = {one: 739.99, two: 587.33, three: 440.00, four: 369.99, five: 293.66, six: 220.00, seven: 146.83}
 
 
 
-
-    var playSound = function(note) {
-      console.log(note);
-      sounds.note.play();
-      setTimeout(function() {
-        sounds.note.stop();
-      }, 500);
-    }
 
     var pianoKeys = document.querySelectorAll('.piano-key');
     pianoKeys.forEach(function(key) {
       key.addEventListener('click', function() {
-        console.log(typeof key.id);
+        var volumeCount = 1;
+        console.log(soundsSource[key.id]);
+        soundsSource[key.id].attack = 0.1;
+        soundsSource[key.id].play();
 
-        var note = key.id;
-        playSound(note);
-        setInterval(function() {
-          playSound(note)
+        var fadeOut = setInterval(function() {
+          volumeCount = volumeCount - 0.2;
+          if (volumeCount < 0.1) {
+            clearInterval(fadeOut);
+          } else {
+            soundsSource[key.id].volume = volumeCount;
+
+            soundsSource[key.id].attack = 0.1;
+            console.log(soundsSource[key.id]);
+            soundsSource[key.id].play();
+          }
         }, 5000)
       })
-    })
+    }) -->
   </script>
 
   <!-- <div class="back-unit">
