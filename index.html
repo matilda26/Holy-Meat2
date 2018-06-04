@@ -7,10 +7,15 @@
 	<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 	<style>
 		body {
-			background-color: #ffffff;
+			/* background-color: #ffffff; */
 			color: #fff;
 			margin: 0px;
 			overflow: hidden;
+			background: -moz-linear-gradient(top, #ff6a00 0%, #ee0979 100%);
+			/* FF3.6-15 */
+			background: -webkit-linear-gradient(top, #ff6a00 0%, #ee0979 100%);
+			/* Chrome10-25,Safari5.1-6 */
+			background: linear-gradient(to bottom, #ff6a00 0%, #ee0979 100%);
 		}
 
 		.header {
@@ -79,20 +84,37 @@
 			controls.update();
 
 			scene = new THREE.Scene();
-			scene.background = new THREE.Color( 0x383838 );
+			// scene.background = new THREE.Color(0x383838);
 			scene.add(new THREE.AmbientLight(0x0f0f0f));
+
 
 			var light = new THREE.SpotLight(0xffffff, 1.5);
 			light.position.set(0, 500, 2000);
 
 			scene.add(light);
+			var texLoader = new THREE.CubeTextureLoader();
+			texLoader.setPath('/models/textures/Bridge/');
+
+			// var textureCube = texLoader.load([
+			// 	'posx.jpg', 'negx.jpg',
+			// 	'posy.jpg', 'negy.jpg',
+			// 	'posz.jpg', 'negz.jpg'
+			// ]);
+			//
+			// var cube = new THREE.MeshBasicMaterial({
+			// 	color: 0xffffff,
+			// 	envMap: textureCube
+			// });
+			// scene.add(cube);
 
 			renderer = new THREE.WebGLRenderer({
-				antialias: true
+				antialias: true,
+				alpha: true
 			});
 			renderer.setPixelRatio(window.devicePixelRatio);
 			renderer.setSize(window.innerWidth, window.innerHeight);
 			renderer.gammaOutput = true;
+			renderer.setClearColor(0x000000, 0.0);
 			container.appendChild(renderer.domElement);
 
 			window.addEventListener('resize', onWindowResize, false);
@@ -170,7 +192,7 @@
 			})
 
 
-
+			renderer.clear();
 			renderer.render(scene, camera);
 
 		}
